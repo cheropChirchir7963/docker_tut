@@ -27,12 +27,12 @@ defmodule RestApi.Router do
     send_resp(conn, 200, "OK")
   end
 
-   # define the endpoint for /animations
+  # define the endpoint for /animations
   get "/animations" do
     # query the database for all animations
     animations = MyApp.Repo.all(MyApp.Animation)
 
-     # Encode the response to JSON format
+    # Encode the response to JSON format
     json_response = Poison.encode!(%{data: animations})
 
     # Set the response content type to JSON
