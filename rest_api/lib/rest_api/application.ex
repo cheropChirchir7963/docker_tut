@@ -8,6 +8,7 @@ defmodule RestApi.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      MyApp.Repo,
       {Plug.Cowboy, scheme: :http, plug: RestApi.Router, options: [port: 8080]}
       # Starts a worker by calling: RestApi.Worker.start_link(arg)
       # {RestApi.Worker, arg}

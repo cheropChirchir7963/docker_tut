@@ -1,7 +1,9 @@
 defmodule RestApi.Router do
   # Bring Plug.Router module into scope
   use Plug.Router
-  
+
+  import Jason
+
   # Attach the Logger to log incoming requests
   plug(Plug.Logger)
 
@@ -23,6 +25,23 @@ defmodule RestApi.Router do
   # Handler for GET request with "/" path
   get "/" do
     send_resp(conn, 200, "OK")
+  end
+
+   # define the endpoint for /animations
+  get "/animations" do
+    # query the database for all animations
+    animations = MyApp.Repo.all(MyApp.Animation)
+
+     # Encode the response to JSON format
+    json_response = Poison.encode!(%{data: animations})
+
+    # Set the response content type to JSON
+    conn
+    |> put_resp_content_type("application/json")
+
+    # Send the JSON response
+    conn
+    |> send_resp(200, json_response)
   end
 
   # Fallback handler when there was no match
