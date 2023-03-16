@@ -2,8 +2,6 @@ defmodule RestApi.Router do
   # Bring Plug.Router module into scope
   use Plug.Router
 
-  import Jason
-
   # Attach the Logger to log incoming requests
   plug(Plug.Logger)
 
@@ -28,20 +26,36 @@ defmodule RestApi.Router do
   end
 
   # define the endpoint for /animations
-  get "/animations" do
-    # query the database for all animations
-    animations = MyApp.Repo.all(MyApp.Animation)
+  # get "/animations" do
 
-    # Encode the response to JSON format
-    json_response = Poison.encode!(%{data: animations})
+  #   # Send the response
+  #   conn
+  #   |> put_resp_content_type("application/json")
+  #   |> send_resp(200, Poison.encode!(animations()))
+  # end
 
-    # Set the response content type to JSON
-    conn
-    |> put_resp_content_type("application/json")
+  get "/animations/:id" do
+    id = conn.params["id"]
+    IO.puts("ID parameter: #{id}")
+    # case animation(conn.params["id"]) do
+    #   nil ->
+    #     conn
+    #     |> put_resp_content_type("application/json")
+    #     |> send_resp(404, Poison.encode!(%{error: "Animation not found"}))
+    #   animation ->
+        conn
+        |> put_resp_content_type("application/json")
+        |> send_resp(200, Poison.encode!(animations(conn.params["id"])))
+    # end
+  end
 
-    # Send the JSON response
-    conn
-    |> send_resp(200, json_response)
+  defp animations(id) do
+    MyApp.Repo.get(MyApp.Animation, id)
+  end
+
+  # query the database for all animations
+  defp animations do
+    MyApp.Repo.all(MyApp.Animation)
   end
 
   # Fallback handler when there was no match
