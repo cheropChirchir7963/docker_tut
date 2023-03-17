@@ -26,31 +26,22 @@ defmodule RestApi.Router do
   end
 
   # define the endpoint for /animations
-  # get "/animations" do
-
-  #   # Send the response
-  #   conn
-  #   |> put_resp_content_type("application/json")
-  #   |> send_resp(200, Poison.encode!(animations()))
-  # end
-
-  get "/animations/:id" do
-    id = conn.params["id"]
-    IO.puts("ID parameter: #{id}")
-    # case animation(conn.params["id"]) do
-    #   nil ->
-    #     conn
-    #     |> put_resp_content_type("application/json")
-    #     |> send_resp(404, Poison.encode!(%{error: "Animation not found"}))
-    #   animation ->
-        conn
-        |> put_resp_content_type("application/json")
-        |> send_resp(200, Poison.encode!(animations(conn.params["id"])))
-    # end
+  get "/animations" do
+    # Send the response
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, Poison.encode!(animations()))
   end
 
-  defp animations(id) do
+  get "/animations/:id/show" do
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(200, Poison.encode!(animation(conn.params["id"])))
+  end
+
+  defp animation(id) do
     MyApp.Repo.get(MyApp.Animation, id)
+    |> Map.delete("__meta__")
   end
 
   # query the database for all animations
